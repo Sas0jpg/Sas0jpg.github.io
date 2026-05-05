@@ -14,7 +14,7 @@ body {
     color: white;
 }
 
-/* глитч фон — НЕ мешает кликам */
+/* глитч */
 body::before {
     content: "";
     position: fixed;
@@ -27,8 +27,7 @@ body::before {
         transparent 4px
     );
     animation: glitch 0.4s infinite;
-    pointer-events: none; /* ВАЖНО */
-    z-index: 0;
+    pointer-events: none;
 }
 
 @keyframes glitch {
@@ -37,23 +36,23 @@ body::before {
     100% { transform: translate(-1px,1px); }
 }
 
-/* центр экрана */
+/* центр */
 #login {
     position: fixed;
     inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1;
 }
 
-/* коробка */
+/* меню */
 #box {
     background: rgba(255,255,255,0.05);
     backdrop-filter: blur(6px);
     border: 2px solid rgba(200,200,200,0.7);
     padding: 40px;
     text-align: center;
+    transition: opacity 0.5s ease;
 }
 
 /* ввод */
@@ -67,7 +66,6 @@ body::before {
     text-align: center;
     width: 220px;
     letter-spacing: 6px;
-    outline: none;
 }
 
 /* кнопка */
@@ -81,14 +79,16 @@ body::before {
     cursor: pointer;
 }
 
-/* основной экран */
+/* основной */
 #main {
     position: fixed;
     inset: 0;
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    opacity: 0; /* скрыт */
+    transition: opacity 1.5s ease;
 }
 
 /* число */
@@ -121,7 +121,7 @@ body::before {
 
 <div id="main">
     <div id="number"></div>
-    <div id="signature">JOPINS</div>
+    <div id="signature">Jopins strength</div>
 </div>
 
 <audio id="music" loop>
@@ -139,7 +139,7 @@ const music = document.getElementById("music");
 
 const correctPassword = "4321";
 
-/* звук при вводе */
+/* звук */
 input.addEventListener("input", () => {
     click.volume = 0.2;
     click.currentTime = 0;
@@ -155,11 +155,25 @@ document.getElementById("number").textContent = number;
 /* вход */
 document.getElementById("enterBtn").onclick = () => {
     if (input.value === correctPassword) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("main").style.display = "flex";
 
+        const box = document.getElementById("box");
+        const main = document.getElementById("main");
+
+        // исчезновение меню
+        box.style.opacity = "0";
+
+        setTimeout(() => {
+            document.getElementById("login").style.display = "none";
+
+            // плавное появление
+            main.style.opacity = "1";
+
+        }, 500);
+
+        // звук
         music.volume = 0.3;
         music.play().catch(()=>{});
+
     } else {
         input.value = "";
     }
