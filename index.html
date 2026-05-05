@@ -32,39 +32,55 @@ body::before {
         transparent 4px
     );
     animation: glitch 0.2s infinite;
-    pointer-events: none;
 }
 
 @keyframes glitch {
     0% { transform: translate(0,0); }
-    20% { transform: translate(-1px,1px); }
-    40% { transform: translate(1px,-1px); }
-    60% { transform: translate(-1px,0); }
-    80% { transform: translate(1px,1px); }
-    100% { transform: translate(0,0); }
+    50% { transform: translate(1px,-1px); }
+    100% { transform: translate(-1px,1px); }
 }
 
-/* старт экран */
-#startScreen {
+/* экран входа */
+#loginScreen {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: black;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 10;
-    transition: opacity 1s ease;
 }
 
-/* кнопка красно-черная */
-#startBtn {
-    width: 140px;
-    height: 140px;
-    background: linear-gradient(145deg, red, black);
+/* контейнер */
+#box {
     border: 2px solid red;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 0 20px red;
+}
+
+/* поле ввода */
+#password {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 20px;
+    background: black;
+    color: white;
+    border: 2px solid red;
+    padding: 15px;
+    text-align: center;
+    outline: none;
+    width: 200px;
+}
+
+/* кнопка */
+#enterBtn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-family: 'Press Start 2P', cursive;
+    background: red;
+    color: black;
+    border: none;
     cursor: pointer;
-    box-shadow: 0 0 20px rgba(255,0,0,0.5);
 }
 
 /* основной контент */
@@ -81,8 +97,6 @@ body::before {
     font-family: 'Press Start 2P', cursive;
     font-size: 110px;
     transform: scaleY(1.4);
-    letter-spacing: 5px;
-    text-shadow: 0 0 8px rgba(255,255,255,0.6);
 }
 
 /* подпись */
@@ -91,27 +105,30 @@ body::before {
     color: red;
     font-family: 'Press Start 2P', cursive;
     font-size: 14px;
-    letter-spacing: 3px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- старт -->
-<div id="startScreen">
-    <button id="startBtn"></button>
+<!-- ввод пароля -->
+<div id="loginScreen">
+    <div id="box">
+        <input id="password" placeholder="****" type="password">
+        <br>
+        <button id="enterBtn">ENTER</button>
+    </div>
 </div>
 
-<!-- основной сайт -->
+<!-- сайт -->
 <div id="main">
     <div id="number"></div>
     <div id="signature">JOPINS</div>
 </div>
 
-<!-- новый звук -->
+<!-- звук -->
 <audio id="music" loop preload="auto">
-  <source src="0505.mp3" type="audio/mpeg">
+  <source src="0505.MP3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -128,22 +145,39 @@ function getTodaySeed() {
 const number = Math.floor(seededRandom(getTodaySeed()) * 100) + 1;
 document.getElementById("number").textContent = number;
 
-document.getElementById("startBtn").onclick = () => {
-    const start = document.getElementById("startScreen");
-    const main = document.getElementById("main");
-    const audio = document.getElementById("music");
+// пароль
+const correctPassword = "1234";
 
-    audio.currentTime = 0;
-    audio.volume = 1;
-    audio.play().catch(() => {});
+function enterSite() {
+    const input = document.getElementById("password").value;
 
-    start.style.opacity = "0";
+    if (input === correctPassword) {
+        const login = document.getElementById("loginScreen");
+        const main = document.getElementById("main");
+        const audio = document.getElementById("music");
 
-    setTimeout(() => {
-        start.style.display = "none";
-        main.style.opacity = "1";
-    }, 1000);
-};
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+
+        login.style.opacity = "0";
+
+        setTimeout(() => {
+            login.style.display = "none";
+            main.style.opacity = "1";
+        }, 800);
+    } else {
+        alert("Неверный пароль");
+    }
+}
+
+document.getElementById("enterBtn").onclick = enterSite;
+
+// enter с клавиатуры
+document.getElementById("password").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        enterSite();
+    }
+});
 </script>
 
 </body>
