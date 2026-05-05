@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Число дня</title>
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    margin-top: 100px;
+    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+}
+h1 {
+    font-size: 40px;
+}
+#number {
+    font-size: 100px;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h1>Число дня</h1>
+<div id="number"></div>
+
+<script>
+function seededRandom(seed) {
+    let x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+}
+
+function getTodaySeed() {
+    const today = new Date();
+    return today.getFullYear()*1000 + today.getMonth()*100 + today.getDate();
+}
+
+const seed = getTodaySeed();
+const number = Math.floor(seededRandom(seed) * 100) + 1;
+
+document.getElementById("number").textContent = number;
+</script>
+
+</body>
+</html>
