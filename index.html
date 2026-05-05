@@ -18,6 +18,32 @@ body {
     overflow: hidden;
 }
 
+/* глитч фон */
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.03) 0px,
+        rgba(255,255,255,0.03) 1px,
+        transparent 2px,
+        transparent 4px
+    );
+    animation: glitch 0.2s infinite;
+    pointer-events: none;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0,0); }
+    20% { transform: translate(-1px,1px); }
+    40% { transform: translate(1px,-1px); }
+    60% { transform: translate(-1px,0); }
+    80% { transform: translate(1px,1px); }
+    100% { transform: translate(0,0); }
+}
+
 /* старт экран */
 #startScreen {
     position: fixed;
@@ -72,20 +98,19 @@ body {
 
 <body>
 
-<!-- старт -->
 <div id="startScreen">
     <button id="startBtn">ENTER</button>
 </div>
 
-<!-- основной сайт -->
 <div id="main">
     <div id="number"></div>
     <div id="signature">JOPINS</div>
 </div>
 
-<!-- звук -->
+<!-- звук (2 источника) -->
 <audio id="tick" loop preload="auto">
   <source src="https://assets.mixkit.co/sfx/preview/mixkit-clock-ticking-1057.mp3" type="audio/mpeg">
+  <source src="https://www.soundjay.com/clock/sounds/clock-ticking-01.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -99,21 +124,26 @@ function getTodaySeed() {
     return today.getFullYear()*1000 + today.getMonth()*100 + today.getDate();
 }
 
-// число дня
 const number = Math.floor(seededRandom(getTodaySeed()) * 100) + 1;
 document.getElementById("number").textContent = number;
 
-// кнопка запуска
 document.getElementById("startBtn").onclick = () => {
     const start = document.getElementById("startScreen");
     const main = document.getElementById("main");
     const audio = document.getElementById("tick");
 
-    // звук
+    // жесткий запуск звука
+    audio.muted = false;
     audio.volume = 1;
-    audio.play().catch(() => {});
 
-    // затемнение
+    let playPromise = audio.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(() => {
+            console.log("звук заблокирован браузером");
+        });
+    }
+
+    // анимация
     start.style.opacity = "0";
 
     setTimeout(() => {
