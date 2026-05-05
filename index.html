@@ -55,32 +55,37 @@ body {
     font-family: 'Press Start 2P', cursive;
     font-size: 110px;
     transform: scaleY(1.4);
-    text-shadow: 0 0 6px rgba(255,255,255,0.5);
+    letter-spacing: 5px;
+    text-shadow: 0 0 8px rgba(255,255,255,0.6);
 }
 
 /* подпись */
 #signature {
-    margin-top: 40px;
+    margin-top: 50px;
     color: red;
     font-family: 'Press Start 2P', cursive;
     font-size: 14px;
+    letter-spacing: 3px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- старт -->
 <div id="startScreen">
     <button id="startBtn">ENTER</button>
 </div>
 
+<!-- основной сайт -->
 <div id="main">
     <div id="number"></div>
     <div id="signature">JOPINS</div>
 </div>
 
-<audio id="tick" loop>
-  <source src="https://www.soundjay.com/clock/sounds/clock-ticking-01.mp3" type="audio/mpeg">
+<!-- звук -->
+<audio id="tick" loop preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-clock-ticking-1057.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -94,23 +99,25 @@ function getTodaySeed() {
     return today.getFullYear()*1000 + today.getMonth()*100 + today.getDate();
 }
 
+// число дня
 const number = Math.floor(seededRandom(getTodaySeed()) * 100) + 1;
 document.getElementById("number").textContent = number;
 
+// кнопка запуска
 document.getElementById("startBtn").onclick = () => {
     const start = document.getElementById("startScreen");
     const main = document.getElementById("main");
+    const audio = document.getElementById("tick");
 
     // звук
-    document.getElementById("tick").play();
+    audio.volume = 1;
+    audio.play().catch(() => {});
 
-    // плавное исчезновение кнопки
+    // затемнение
     start.style.opacity = "0";
 
     setTimeout(() => {
         start.style.display = "none";
-
-        // плавное появление сайта
         main.style.opacity = "1";
     }, 1000);
 };
