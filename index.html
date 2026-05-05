@@ -2,9 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Число дня</title>
+<title>Jopins</title>
 
-<!-- Пиксельный шрифт -->
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
@@ -14,50 +13,51 @@ body {
     background: black;
     color: white;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     overflow: hidden;
 }
 
-/* Лёгкий шум */
+/* шум */
 body::before {
     content: "";
     position: absolute;
     width: 100%;
     height: 100%;
     background-image: repeating-radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 2px);
-    opacity: 0.15;
-    pointer-events: none;
+    opacity: 0.12;
 }
 
-h1 {
-    font-size: 20px;
-    margin-bottom: 40px;
-    font-family: Arial;
-}
-
+/* число */
 #number {
     font-family: 'Press Start 2P', cursive;
-    font-size: 80px;
-    color: white;
-    text-shadow: 0 0 5px rgba(255,255,255,0.4);
+    font-size: 110px;
+    transform: scaleY(1.4); /* вытягиваем */
+    letter-spacing: 5px;
+    text-shadow: 0 0 6px rgba(255,255,255,0.5);
 }
 
+/* подпись */
 #signature {
-    margin-top: 40px;
+    margin-top: 50px;
     color: red;
-    font-size: 20px;
-    font-family: Arial;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    letter-spacing: 3px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Число дня</h1>
 <div id="number"></div>
-<div id="signature">Jopins</div>
+<div id="signature">JOPINS</div>
+
+<!-- звук -->
+<audio id="tick" loop>
+  <source src="https://www.soundjay.com/clock/sounds/clock-ticking-01.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 function seededRandom(seed) {
@@ -74,6 +74,11 @@ const seed = getTodaySeed();
 const number = Math.floor(seededRandom(seed) * 100) + 1;
 
 document.getElementById("number").textContent = number;
+
+/* включение звука (нужно кликнуть) */
+document.body.addEventListener("click", () => {
+    document.getElementById("tick").play();
+});
 </script>
 
 </body>
