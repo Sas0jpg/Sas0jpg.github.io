@@ -17,7 +17,7 @@ body {
     align-items: center;
 }
 
-/* фон (не мешает кликам) */
+/* фон */
 body::before {
     content: "";
     position: absolute;
@@ -75,8 +75,16 @@ body::before {
 /* число */
 #number {
     font-family: 'Press Start 2P', cursive;
-    font-size: 90px;
+    font-size: 100px;
     transform: scaleY(1.3);
+}
+
+/* подпись */
+#signature {
+    margin-top: 20px;
+    color: red;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
 }
 </style>
 </head>
@@ -93,9 +101,7 @@ body::before {
 
 <div id="main">
     <div id="number"></div>
-    <div style="margin-top:20px; color:red; font-family:'Press Start 2P'; font-size:14px;">
-        Jopins strength
-    </div>
+    <div id="signature">Jopins strength</div>
 </div>
 
 <audio id="music" loop>
@@ -120,11 +126,27 @@ input.addEventListener("input", () => {
     click.play().catch(()=>{});
 });
 
-/* число */
-const today = new Date();
-const seed = today.getFullYear()*1000 + today.getMonth()*100 + today.getDate();
-const number = Math.floor((Math.sin(seed)*10000 % 1) * 100) + 1;
-document.getElementById("number").textContent = number;
+/* генерация числа (каждый час) */
+function seededRandom(seed) {
+    let x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+}
+
+const now = new Date();
+const seed = now.getFullYear()*10000 + now.getMonth()*1000 + now.getDate()*100 + now.getHours();
+
+const number = Math.floor(seededRandom(seed) * 101);
+
+const numberEl = document.getElementById("number");
+numberEl.textContent = number;
+
+/* цвет */
+const intensity = number / 100;
+const red = 255;
+const green = Math.floor(255 * (1 - intensity));
+const blue = Math.floor(255 * (1 - intensity));
+
+numberEl.style.color = `rgb(${red}, ${green}, ${blue})`;
 
 /* вход */
 document.getElementById("enterBtn").onclick = () => {
