@@ -57,41 +57,14 @@ body::before {
     transition: opacity 1s ease;
 }
 
-/* кнопка кровь */
+/* кнопка красно-черная */
 #startBtn {
     width: 140px;
     height: 140px;
-    background: white;
-    border: none;
+    background: linear-gradient(145deg, red, black);
+    border: 2px solid red;
     cursor: pointer;
-    position: relative;
-    box-shadow: 0 0 20px rgba(255,255,255,0.3);
-}
-
-#startBtn::before {
-    content: "";
-    position: absolute;
-    width: 12px;
-    height: 30px;
-    bottom: -25px;
-    left: 30px;
-    background: red;
-    border-radius: 50%;
-    box-shadow:
-        20px 10px red,
-        50px 5px red,
-        80px 15px red;
-}
-
-#startBtn::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 40px;
-    bottom: -30px;
-    background: linear-gradient(to bottom, red, transparent);
-    filter: blur(2px);
-    opacity: 0.8;
+    box-shadow: 0 0 20px rgba(255,0,0,0.5);
 }
 
 /* основной контент */
@@ -125,7 +98,7 @@ body::before {
 
 <body>
 
-<!-- старт экран -->
+<!-- старт -->
 <div id="startScreen">
     <button id="startBtn"></button>
 </div>
@@ -136,9 +109,9 @@ body::before {
     <div id="signature">JOPINS</div>
 </div>
 
-<!-- ТВОЙ ЛОКАЛЬНЫЙ ЗВУК -->
-<audio id="tick" loop preload="auto">
-  <source src="household-clock-tick-tock.mp3" type="audio/mpeg">
+<!-- новый звук -->
+<audio id="music" loop preload="auto">
+  <source src="0505.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -152,22 +125,17 @@ function getTodaySeed() {
     return today.getFullYear()*1000 + today.getMonth()*100 + today.getDate();
 }
 
-// число дня
 const number = Math.floor(seededRandom(getTodaySeed()) * 100) + 1;
 document.getElementById("number").textContent = number;
 
-// кнопка
 document.getElementById("startBtn").onclick = () => {
     const start = document.getElementById("startScreen");
     const main = document.getElementById("main");
-    const audio = document.getElementById("tick");
+    const audio = document.getElementById("music");
 
     audio.currentTime = 0;
     audio.volume = 1;
-
-    audio.play().catch(() => {
-        alert("Нажми ещё раз для звука");
-    });
+    audio.play().catch(() => {});
 
     start.style.opacity = "0";
 
