@@ -12,11 +12,11 @@ body {
     height: 100vh;
     background: black;
     color: white;
+    overflow: hidden;
 }
 
-/* глитч */
-body::before {
-    content: "";
+/* глитч В ОТДЕЛЬНОМ СЛОЕ */
+#glitch {
     position: fixed;
     inset: 0;
     background: repeating-linear-gradient(
@@ -27,7 +27,8 @@ body::before {
         transparent 4px
     );
     animation: glitch 0.4s infinite;
-    pointer-events: none;
+    pointer-events: none; /* НЕ блокирует клики */
+    z-index: 0;
 }
 
 @keyframes glitch {
@@ -43,6 +44,7 @@ body::before {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 
 /* меню */
@@ -66,6 +68,7 @@ body::before {
     text-align: center;
     width: 220px;
     letter-spacing: 6px;
+    outline: none;
 }
 
 /* кнопка */
@@ -87,8 +90,9 @@ body::before {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    opacity: 0; /* скрыт */
+    opacity: 0;
     transition: opacity 1.5s ease;
+    z-index: 1;
 }
 
 /* число */
@@ -110,6 +114,8 @@ body::before {
 </head>
 
 <body>
+
+<div id="glitch"></div>
 
 <div id="login">
     <div id="box">
@@ -139,7 +145,7 @@ const music = document.getElementById("music");
 
 const correctPassword = "4321";
 
-/* звук */
+/* звук при вводе */
 input.addEventListener("input", () => {
     click.volume = 0.2;
     click.currentTime = 0;
@@ -159,18 +165,13 @@ document.getElementById("enterBtn").onclick = () => {
         const box = document.getElementById("box");
         const main = document.getElementById("main");
 
-        // исчезновение меню
         box.style.opacity = "0";
 
         setTimeout(() => {
             document.getElementById("login").style.display = "none";
-
-            // плавное появление
             main.style.opacity = "1";
-
         }, 500);
 
-        // звук
         music.volume = 0.3;
         music.play().catch(()=>{});
 
