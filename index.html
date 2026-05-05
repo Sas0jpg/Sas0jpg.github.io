@@ -17,7 +17,7 @@ body {
     align-items: center;
 }
 
-/* глитч фон (НЕ мешает кликам) */
+/* глитч */
 body::before {
     content: "";
     position: fixed;
@@ -31,7 +31,7 @@ body::before {
         transparent 4px
     );
     animation: glitch 0.4s infinite;
-    pointer-events: none; /* ВАЖНО */
+    pointer-events: none;
 }
 
 @keyframes glitch {
@@ -48,6 +48,7 @@ body::before {
     box-shadow: 0 0 15px rgba(200,200,200,0.4);
     padding: 40px;
     text-align: center;
+    transition: opacity 0.6s ease;
 }
 
 /* ввод */
@@ -76,9 +77,11 @@ body::before {
 
 /* основной */
 #main {
-    display: none;
+    opacity: 0;
+    display: flex;
     flex-direction: column;
     align-items: center;
+    transition: opacity 1.5s ease;
 }
 
 /* число */
@@ -126,9 +129,9 @@ const input = document.getElementById("password");
 const click = document.getElementById("click");
 const music = document.getElementById("music");
 
-const correctPassword = "1234";
+const correctPassword = "4321"; // 🔐 новый пароль
 
-/* звук нажатия */
+/* звук */
 input.addEventListener("input", () => {
     click.volume = 0.2;
     click.currentTime = 0;
@@ -144,9 +147,20 @@ document.getElementById("number").textContent = number;
 /* вход */
 document.getElementById("enterBtn").onclick = () => {
     if (input.value === correctPassword) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("main").style.display = "flex";
+        const box = document.getElementById("box");
+        const main = document.getElementById("main");
 
+        // плавное исчезновение меню
+        box.style.opacity = "0";
+
+        setTimeout(() => {
+            document.getElementById("login").style.display = "none";
+
+            // появление сайта
+            main.style.opacity = "1";
+        }, 600);
+
+        // звук
         music.volume = 0.3;
         music.play().catch(()=>{});
     } else {
