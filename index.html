@@ -12,49 +12,33 @@ body {
     height: 100vh;
     background: black;
     color: white;
-    overflow: hidden;
-}
-
-/* глитч В ОТДЕЛЬНОМ СЛОЕ */
-#glitch {
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,0.015) 0px,
-        rgba(255,255,255,0.015) 1px,
-        transparent 2px,
-        transparent 4px
-    );
-    animation: glitch 0.4s infinite;
-    pointer-events: none; /* НЕ блокирует клики */
-    z-index: 0;
-}
-
-@keyframes glitch {
-    0% { transform: translate(0,0); }
-    50% { transform: translate(1px,-1px); }
-    100% { transform: translate(-1px,1px); }
-}
-
-/* центр */
-#login {
-    position: fixed;
-    inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1;
+}
+
+/* фон (не мешает кликам) */
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.01) 0px,
+        rgba(255,255,255,0.01) 1px,
+        transparent 2px,
+        transparent 4px
+    );
+    pointer-events: none;
 }
 
 /* меню */
 #box {
     background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(6px);
-    border: 2px solid rgba(200,200,200,0.7);
-    padding: 40px;
+    border: 2px solid rgba(200,200,200,0.5);
+    padding: 30px;
     text-align: center;
-    transition: opacity 0.5s ease;
 }
 
 /* ввод */
@@ -63,59 +47,41 @@ body {
     font-size: 18px;
     background: transparent;
     color: white;
-    border: 2px solid rgba(200,200,200,0.8);
-    padding: 12px;
+    border: 2px solid rgba(200,200,200,0.7);
+    padding: 10px;
     text-align: center;
-    width: 220px;
-    letter-spacing: 6px;
-    outline: none;
+    width: 200px;
+    letter-spacing: 5px;
 }
 
 /* кнопка */
 #enterBtn {
-    margin-top: 20px;
+    margin-top: 15px;
     padding: 10px 20px;
     font-family: 'Press Start 2P', cursive;
-    background: rgba(200,200,200,0.2);
+    background: gray;
     color: white;
-    border: 1px solid rgba(200,200,200,0.6);
+    border: none;
     cursor: pointer;
 }
 
 /* основной */
 #main {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: none;
     flex-direction: column;
-    opacity: 0;
-    transition: opacity 1.5s ease;
-    z-index: 1;
+    align-items: center;
 }
 
 /* число */
 #number {
     font-family: 'Press Start 2P', cursive;
-    font-size: 110px;
-    transform: scaleY(1.4);
-    color: rgba(255,255,255,0.6);
-}
-
-/* подпись */
-#signature {
-    margin-top: 40px;
-    color: red;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 14px;
+    font-size: 90px;
+    transform: scaleY(1.3);
 }
 </style>
 </head>
 
 <body>
-
-<div id="glitch"></div>
 
 <div id="login">
     <div id="box">
@@ -127,7 +93,9 @@ body {
 
 <div id="main">
     <div id="number"></div>
-    <div id="signature">Jopins strength</div>
+    <div style="margin-top:20px; color:red; font-family:'Press Start 2P'; font-size:14px;">
+        Jopins strength
+    </div>
 </div>
 
 <audio id="music" loop>
@@ -161,20 +129,11 @@ document.getElementById("number").textContent = number;
 /* вход */
 document.getElementById("enterBtn").onclick = () => {
     if (input.value === correctPassword) {
-
-        const box = document.getElementById("box");
-        const main = document.getElementById("main");
-
-        box.style.opacity = "0";
-
-        setTimeout(() => {
-            document.getElementById("login").style.display = "none";
-            main.style.opacity = "1";
-        }, 500);
+        document.getElementById("login").style.display = "none";
+        document.getElementById("main").style.display = "flex";
 
         music.volume = 0.3;
         music.play().catch(()=>{});
-
     } else {
         input.value = "";
     }
