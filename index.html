@@ -15,46 +15,70 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
     overflow: hidden;
 }
 
-/* шум */
-body::before {
-    content: "";
-    position: absolute;
+/* старт экран */
+#startScreen {
+    position: fixed;
     width: 100%;
     height: 100%;
-    background-image: repeating-radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 2px);
-    opacity: 0.12;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: opacity 1s ease;
+}
+
+/* кнопка */
+#startBtn {
+    background: white;
+    color: black;
+    padding: 20px 50px;
+    font-size: 22px;
+    border: none;
+    cursor: pointer;
+}
+
+/* основной контент */
+#main {
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: opacity 2s ease;
 }
 
 /* число */
 #number {
     font-family: 'Press Start 2P', cursive;
     font-size: 110px;
-    transform: scaleY(1.4); /* вытягиваем */
-    letter-spacing: 5px;
+    transform: scaleY(1.4);
     text-shadow: 0 0 6px rgba(255,255,255,0.5);
 }
 
 /* подпись */
 #signature {
-    margin-top: 50px;
+    margin-top: 40px;
     color: red;
     font-family: 'Press Start 2P', cursive;
     font-size: 14px;
-    letter-spacing: 3px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="number"></div>
-<div id="signature">JOPINS</div>
+<div id="startScreen">
+    <button id="startBtn">ENTER</button>
+</div>
 
-<!-- звук -->
+<div id="main">
+    <div id="number"></div>
+    <div id="signature">JOPINS</div>
+</div>
+
 <audio id="tick" loop>
   <source src="https://www.soundjay.com/clock/sounds/clock-ticking-01.mp3" type="audio/mpeg">
 </audio>
@@ -70,15 +94,26 @@ function getTodaySeed() {
     return today.getFullYear()*1000 + today.getMonth()*100 + today.getDate();
 }
 
-const seed = getTodaySeed();
-const number = Math.floor(seededRandom(seed) * 100) + 1;
-
+const number = Math.floor(seededRandom(getTodaySeed()) * 100) + 1;
 document.getElementById("number").textContent = number;
 
-/* включение звука (нужно кликнуть) */
-document.body.addEventListener("click", () => {
+document.getElementById("startBtn").onclick = () => {
+    const start = document.getElementById("startScreen");
+    const main = document.getElementById("main");
+
+    // звук
     document.getElementById("tick").play();
-});
+
+    // плавное исчезновение кнопки
+    start.style.opacity = "0";
+
+    setTimeout(() => {
+        start.style.display = "none";
+
+        // плавное появление сайта
+        main.style.opacity = "1";
+    }, 1000);
+};
 </script>
 
 </body>
