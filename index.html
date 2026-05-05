@@ -17,30 +17,16 @@ body {
     align-items: center;
 }
 
-/* фон */
-body::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,0.01) 0px,
-        rgba(255,255,255,0.01) 1px,
-        transparent 2px,
-        transparent 4px
-    );
-}
+/* УБРАЛИ псевдо-слой — он мешал кликам */
 
-/* меню */
 #box {
     background: rgba(255,255,255,0.05);
     border: 2px solid rgba(200,200,200,0.5);
     padding: 30px;
     text-align: center;
+    z-index: 1;
 }
 
-/* ввод */
 #password {
     font-family: 'Press Start 2P', cursive;
     font-size: 18px;
@@ -51,9 +37,9 @@ body::before {
     text-align: center;
     width: 200px;
     letter-spacing: 5px;
+    outline: none;
 }
 
-/* кнопка */
 #enterBtn {
     margin-top: 15px;
     padding: 10px 20px;
@@ -64,18 +50,15 @@ body::before {
     cursor: pointer;
 }
 
-/* основной */
 #main {
     display: none;
     flex-direction: column;
     align-items: center;
 }
 
-/* число */
 #number {
     font-family: 'Press Start 2P', cursive;
     font-size: 90px;
-    transform: scaleY(1.3);
 }
 </style>
 </head>
@@ -94,12 +77,10 @@ body::before {
     <div id="number"></div>
 </div>
 
-<!-- музыка -->
 <audio id="music" loop>
   <source src="0505.MP3" type="audio/mpeg">
 </audio>
 
-<!-- клик -->
 <audio id="click">
   <source src="metal-button-press_fyhbwd4u.mp3" type="audio/mpeg">
 </audio>
@@ -111,11 +92,11 @@ const music = document.getElementById("music");
 
 const correctPassword = "1234";
 
-/* звук нажатия */
+/* звук при вводе */
 input.addEventListener("input", () => {
     click.volume = 0.2;
     click.currentTime = 0;
-    click.play();
+    click.play().catch(()=>{});
 });
 
 /* число */
@@ -124,18 +105,18 @@ const seed = today.getFullYear()*1000 + today.getMonth()*100 + today.getDate();
 const number = Math.floor((Math.sin(seed)*10000 % 1) * 100) + 1;
 document.getElementById("number").textContent = number;
 
-/* вход */
-document.getElementById("enterBtn").onclick = () => {
+/* кнопка */
+document.getElementById("enterBtn").addEventListener("click", () => {
     if (input.value === correctPassword) {
         document.getElementById("login").style.display = "none";
         document.getElementById("main").style.display = "flex";
 
         music.volume = 0.3;
-        music.play();
+        music.play().catch(()=>{});
     } else {
         input.value = "";
     }
-};
+});
 
 /* Enter */
 input.addEventListener("keydown", (e) => {
