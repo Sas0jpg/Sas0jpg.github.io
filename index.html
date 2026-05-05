@@ -18,7 +18,7 @@ body {
     overflow: hidden;
 }
 
-/* глитч фон */
+/* слабый глитч */
 body::before {
     content: "";
     position: absolute;
@@ -26,12 +26,12 @@ body::before {
     height: 100%;
     background: repeating-linear-gradient(
         0deg,
-        rgba(255,255,255,0.03) 0px,
-        rgba(255,255,255,0.03) 1px,
+        rgba(255,255,255,0.02) 0px,
+        rgba(255,255,255,0.02) 1px,
         transparent 2px,
         transparent 4px
     );
-    animation: glitch 0.2s infinite;
+    animation: glitch 0.3s infinite;
 }
 
 @keyframes glitch {
@@ -51,25 +51,26 @@ body::before {
     z-index: 10;
 }
 
-/* контейнер */
+/* серое меню */
 #box {
+    background: #222;
     border: 2px solid red;
     padding: 40px;
     text-align: center;
-    box-shadow: 0 0 20px red;
+    box-shadow: 0 0 15px red;
 }
 
-/* поле ввода */
+/* поле */
 #password {
     font-family: 'Press Start 2P', cursive;
-    font-size: 20px;
-    background: black;
+    font-size: 22px;
+    background: #111;
     color: white;
     border: 2px solid red;
     padding: 15px;
     text-align: center;
-    outline: none;
-    width: 200px;
+    width: 220px;
+    letter-spacing: 5px;
 }
 
 /* кнопка */
@@ -83,7 +84,7 @@ body::before {
     cursor: pointer;
 }
 
-/* основной контент */
+/* основной */
 #main {
     opacity: 0;
     display: flex;
@@ -111,24 +112,27 @@ body::before {
 
 <body>
 
-<!-- ввод пароля -->
 <div id="loginScreen">
     <div id="box">
-        <input id="password" placeholder="****" type="password">
+        <input id="password" placeholder="0000" type="password">
         <br>
         <button id="enterBtn">ENTER</button>
     </div>
 </div>
 
-<!-- сайт -->
 <div id="main">
     <div id="number"></div>
     <div id="signature">JOPINS</div>
 </div>
 
-<!-- звук -->
+<!-- музыка -->
 <audio id="music" loop preload="auto">
   <source src="0505.MP3" type="audio/mpeg">
+</audio>
+
+<!-- звук кнопок -->
+<audio id="clickSound" preload="auto">
+  <source src="metal-button-press_fyhbwd4u.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -145,19 +149,25 @@ function getTodaySeed() {
 const number = Math.floor(seededRandom(getTodaySeed()) * 100) + 1;
 document.getElementById("number").textContent = number;
 
-// пароль
 const correctPassword = "1234";
 
-function enterSite() {
-    const input = document.getElementById("password").value;
+// звук при вводе
+const input = document.getElementById("password");
+const click = document.getElementById("clickSound");
 
-    if (input === correctPassword) {
+input.addEventListener("input", () => {
+    click.currentTime = 0;
+    click.play().catch(()=>{});
+});
+
+function enterSite() {
+    if (input.value === correctPassword) {
         const login = document.getElementById("loginScreen");
         const main = document.getElementById("main");
-        const audio = document.getElementById("music");
+        const music = document.getElementById("music");
 
-        audio.currentTime = 0;
-        audio.play().catch(() => {});
+        music.volume = 0.3; // ТИШЕ
+        music.play().catch(()=>{});
 
         login.style.opacity = "0";
 
@@ -172,11 +182,8 @@ function enterSite() {
 
 document.getElementById("enterBtn").onclick = enterSite;
 
-// enter с клавиатуры
-document.getElementById("password").addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        enterSite();
-    }
+input.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") enterSite();
 });
 </script>
 
