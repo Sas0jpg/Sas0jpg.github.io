@@ -40,7 +40,17 @@ body::before {
     100% { transform: translate(-1px,1px); }
 }
 
-/* меню */
+/* центр меню */
+#login {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* коробка */
 #box {
     background: rgba(255,255,255,0.05);
     backdrop-filter: blur(6px);
@@ -84,11 +94,13 @@ body::before {
     transition: opacity 1.5s ease;
 }
 
-/* число */
+/* приглушённые цифры */
 #number {
     font-family: 'Press Start 2P', cursive;
     font-size: 110px;
     transform: scaleY(1.4);
+    color: rgba(255,255,255,0.6); /* темнее */
+    text-shadow: 0 0 5px rgba(255,255,255,0.2); /* мягкое свечение */
 }
 
 /* подпись */
@@ -129,7 +141,7 @@ const input = document.getElementById("password");
 const click = document.getElementById("click");
 const music = document.getElementById("music");
 
-const correctPassword = "4321"; // 🔐 новый пароль
+const correctPassword = "4321";
 
 /* звук */
 input.addEventListener("input", () => {
@@ -150,17 +162,13 @@ document.getElementById("enterBtn").onclick = () => {
         const box = document.getElementById("box");
         const main = document.getElementById("main");
 
-        // плавное исчезновение меню
         box.style.opacity = "0";
 
         setTimeout(() => {
             document.getElementById("login").style.display = "none";
-
-            // появление сайта
             main.style.opacity = "1";
         }, 600);
 
-        // звук
         music.volume = 0.3;
         music.play().catch(()=>{});
     } else {
