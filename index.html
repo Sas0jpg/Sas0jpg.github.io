@@ -16,19 +16,66 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+
+    filter:
+        contrast(1.1)
+        brightness(0.9)
+        saturate(0.8);
 }
 
-/* CRT эффект */
+/* CRT полосы */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,0.02) 0px,
-        transparent 2px
-    );
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,0.03) 0px,
+            transparent 2px
+        );
+
     pointer-events: none;
+    animation: flicker 0.15s infinite;
+}
+
+/* шум */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image:
+        radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+
+    background-size: 4px 4px;
+
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    opacity: 0.15;
+}
+
+/* мерцание */
+@keyframes flicker {
+    0% { opacity: 0.95; }
+    50% { opacity: 1; }
+    100% { opacity: 0.92; }
+}
+
+/* дыхание экрана */
+@keyframes breathe {
+    0%,100% {
+        transform:
+            perspective(900px)
+            scale(1.02);
+    }
+
+    50% {
+        transform:
+            perspective(900px)
+            scale(1.04);
+    }
 }
 
 /* меню */
@@ -37,17 +84,23 @@ body::before {
     border: 2px solid rgba(200,200,200,0.6);
     padding: 30px;
     text-align: center;
+
+    backdrop-filter: blur(5px);
 }
 
 /* ввод */
 #password {
     font-family: 'Press Start 2P';
     font-size: 18px;
+
     background: transparent;
     color: white;
+
     border: 2px solid rgba(200,200,200,0.8);
+
     padding: 10px;
     text-align: center;
+
     width: 200px;
 }
 
@@ -55,57 +108,52 @@ body::before {
 #enterBtn {
     margin-top: 15px;
     padding: 10px 20px;
+
     font-family: 'Press Start 2P';
-    background: gray;
+
+    background: rgba(255,255,255,0.15);
     color: white;
-    border: none;
+
+    border: 1px solid rgba(255,255,255,0.3);
+
     cursor: pointer;
 }
 
-/* основной */
+/* главный экран */
 #main {
     display: none;
     flex-direction: column;
     align-items: center;
+
+    animation: breathe 5s infinite;
 }
 
 /* число */
 #number {
     font-family: 'Press Start 2P';
+
     font-size: 100px;
-    transform: scaleY(1.3);
+
+    transform:
+        scaleY(1.3)
+        perspective(900px);
+
+    text-shadow:
+        0 0 10px rgba(255,0,0,0.3),
+        0 0 20px rgba(255,255,255,0.15);
 }
 
 /* подпись */
 #signature {
     margin-top: 20px;
+
     color: red;
+
     font-family: 'Press Start 2P';
+
     font-size: 14px;
-}
 
-/* сообщения */
-#systemMessage {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: red;
-    font-family: 'Press Start 2P';
-    font-size: 12px;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-/* глитч */
-.glitchScreen {
-    animation: glitch 0.2s;
-}
-
-@keyframes glitch {
-    0% { transform: translate(0); }
-    50% { transform: translate(-5px,5px); }
-    100% { transform: translate(0); }
+    opacity: 0.8;
 }
 </style>
 </head>
@@ -114,25 +162,40 @@ body::before {
 
 <div id="login">
     <div id="box">
-        <input id="password" type="text" placeholder="0000">
+
+        <input
+            id="password"
+            type="text"
+            placeholder="0000"
+        >
+
         <br>
-        <button id="enterBtn">ENTER</button>
+
+        <button id="enterBtn">
+            ENTER
+        </button>
+
     </div>
 </div>
 
 <div id="main">
+
     <div id="number"></div>
-    <div id="signature">Jopins strength</div>
+
+    <div id="signature">
+        Jopins strength
+    </div>
+
 </div>
 
-<div id="systemMessage"></div>
-
+<!-- музыка -->
 <audio id="music" loop>
-  <source src="0505.MP3">
+    <source src="0505.MP3">
 </audio>
 
+<!-- звук кнопок -->
 <audio id="click">
-  <source src="metal-button-press_fyhbwd4u.mp3">
+    <source src="metal-button-press_fyhbwd4u.mp3">
 </audio>
 
 <script>
@@ -142,86 +205,111 @@ const music = document.getElementById("music");
 
 const correctPassword = "4321";
 
-/* звук при вводе */
+/* звук ввода */
 input.addEventListener("input", () => {
+
     click.volume = 0.2;
+
     click.currentTime = 0;
+
     click.play().catch(()=>{});
+
 });
 
 /* генерация числа */
 function seededRandom(seed) {
+
     let x = Math.sin(seed) * 10000;
+
     return x - Math.floor(x);
 }
 
+/* число меняется каждый час */
 const now = new Date();
-const seed = now.getFullYear()*10000 + now.getMonth()*1000 + now.getDate()*100 + now.getHours();
-const finalNumber = Math.floor(seededRandom(seed) * 101);
 
-const numberEl = document.getElementById("number");
+const seed =
+    now.getFullYear()*10000 +
+    now.getMonth()*1000 +
+    now.getDate()*100 +
+    now.getHours();
 
-/* анимация числа */
+const finalNumber =
+    Math.floor(seededRandom(seed) * 101);
+
+const numberEl =
+    document.getElementById("number");
+
+/* анимация перебора */
 let count = 0;
+
 let interval = setInterval(() => {
-    numberEl.textContent = Math.floor(Math.random()*101);
+
+    numberEl.textContent =
+        Math.floor(Math.random()*101);
+
     count++;
+
     if (count > 20) {
+
         clearInterval(interval);
-        numberEl.textContent = finalNumber;
+
+        numberEl.textContent =
+            finalNumber;
+
         applyColor(finalNumber);
     }
+
 }, 50);
 
 /* цвет */
 function applyColor(num) {
-    const intensity = num / 100;
-    const red = 255;
-    const green = Math.floor(255 * (1 - intensity));
-    const blue = Math.floor(255 * (1 - intensity));
-    numberEl.style.color = `rgb(${red},${green},${blue})`;
 
-    music.volume = 0.1 + intensity * 0.5;
+    const intensity = num / 100;
+
+    const red = 255;
+
+    const green =
+        Math.floor(255 * (1 - intensity));
+
+    const blue =
+        Math.floor(255 * (1 - intensity));
+
+    numberEl.style.color =
+        `rgb(${red},${green},${blue})`;
+
+    /* громкость зависит от числа */
+    music.volume =
+        0.1 + intensity * 0.5;
 }
 
 /* вход */
 document.getElementById("enterBtn").onclick = () => {
+
     if (input.value === correctPassword) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("main").style.display = "flex";
+
+        document.getElementById("login")
+            .style.display = "none";
+
+        document.getElementById("main")
+            .style.display = "flex";
+
         music.play().catch(()=>{});
+
     } else {
+
         input.value = "";
     }
 };
 
-/* сообщения системы */
-const msg = document.getElementById("systemMessage");
-const messages = [
-    "ez",
-    "Nikitko",
-    "Jop",
-    " "
-];
+/* Enter */
+input.addEventListener("keydown", (e) => {
 
-function showMessage(text) {
-    msg.textContent = text;
-    msg.style.opacity = "1";
-    setTimeout(() => msg.style.opacity = "0", 2000);
-}
+    if (e.key === "Enter") {
 
-/* случайные глитчи */
-setInterval(() => {
-    const r = Math.random();
-
-    if (r < 0.3) {
-        document.body.classList.add("glitchScreen");
-        setTimeout(() => document.body.classList.remove("glitchScreen"), 200);
-    } else if (r < 0.6) {
-        showMessage(messages[Math.floor(Math.random()*messages.length)]);
+        document.getElementById("enterBtn")
+            .click();
     }
-
-}, 4000);
+});
 </script>
 
 </body>
